@@ -4,7 +4,7 @@
  * # i18n tool
  *
  * ## locale.js: i18n for Node.js and browser
- * 
+ *
  * @author Dmitry A. Chleck <dmitrychleck@gmail.com>
  * @url https://github.com/chleck/locale-tools
  */
@@ -124,7 +124,7 @@ function init() {
       console.log('ERROR: Can not create directory "%s".\n\t%s', dir, e);
       process.exit(1);
     }
-    // 
+    //
     try {
       var cfgFile = path.join(dir, 'tr.json');
       fs.writeFileSync(cfgFile, JSON.stringify(cfg, null, '  '), 'utf8');
@@ -148,7 +148,7 @@ function collect() {
   // Find __() in project files
   console.log('\nParsing:');
   grep(home);
-  
+
   // Save translation for each target language
   for(var target in cfg.targets) {
     // Make output filename
@@ -219,7 +219,7 @@ function collect() {
       console.log('WARNING: Can not read directory "%s", skipped.\n\t%s', dir, e);
       return;
     }
-  
+
     for(var i in files) {
       var file = path.join(dir, files[i]);
       if(ignore(file)) continue;
@@ -244,7 +244,7 @@ function collect() {
   // Extract params from __()
   function parse(file) {
     console.log('  %s', file);
-  
+
     // Current position
     var pos  = -1
       , line = 1
@@ -256,7 +256,7 @@ function collect() {
       console.log('WARNING: Can not read file "%s", skipped.\n\t%s', file, e);
       return;
     }
-    
+
     // Result
     while(next()) {
       // Parse __()
@@ -268,16 +268,16 @@ function collect() {
       else if(check('//')) comment1();
       else if(check('/*')) comment2();
     }
-  
+
     // Parse __()
     function __() {
       var args
         , where
         , plural = false
         , from   = pos + 3;
-  
+
       where = file + ' (' + line + ':' + col + ')';
-  
+
       if(f[from] == '[') plural = true; else plural = false;
 
       while(next()) {
@@ -321,28 +321,28 @@ function collect() {
         else if(check('/*')) comment2();
       }
     }
-  
+
     // Skip string
     function str(to) {
       while(next()) {
         if(f[pos] == to && f[pos-1] != '\\') return;
       }
     }
-  
+
     // Skip // comment
     function comment1() {
       while(next()) {
         if(f[pos] == '\n') return;
       }
     }
-  
+
     // Skip /* */ comment
     function comment2() {
       while(next()) {
         if(f[pos] == '/' && f[pos-1] == '*') return;
       }
     }
-  
+
     // splitPhrase
     function splitPhrase(phrase) {
       var i = 0;
@@ -420,7 +420,7 @@ function collect() {
         if(f[pos + i] != str[i]) return false;
       return true;
     }
-  
+
   }
 
 } // End of collect
@@ -446,7 +446,7 @@ function dict() {
     console.log('ERROR: Can not save dictionary config "%s".\n\t%s', i18nFile, e);
     process.exit(1);
   }
-  
+
   // Build translation dictionary for given target
   function build(target) {
     var n       = 0
@@ -457,7 +457,7 @@ function dict() {
       , tr      = [];
     // Result
     var res     = { '': cfg.targets[target].rule };
-    
+
     // Read .tr for given lang
     try {
       var trFile = path.join(home, 'i18n', target + '.tr');
@@ -496,7 +496,7 @@ function dict() {
         // Base phrase
         case '?':
           baseN++;
-          if(baseN > (plural ? cfg.n : 1)) err('Too much base language lines');
+          // if(baseN > (plural ? cfg.n : 1)) err('Too much base language lines');
           break;
         // Target phrase
         case '!':
@@ -524,7 +524,7 @@ function dict() {
           process.exit(1);
       }
     });
-    
+
     try {
       var jsonFile = path.join(home, 'i18n', target + '.json')
       fs.writeFileSync(jsonFile, JSON.stringify(res, null, '  '), 'utf8');
